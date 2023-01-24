@@ -3,7 +3,16 @@ module.exports = function toReadable (number) {
     return from1to19 (number);
   }
   if (number >= 20 && number < 100) {
-    return from20to99 (number);
+    if (number % 10 === 0) {
+      return from20to99DozensFull (number)
+    } else 
+      return from20to99Dozens (number);
+  }
+  if (number >= 100 && number < 1000) {
+    if (number % 100 === 0) {
+      return from100to990HundredsFull (number)
+    } else 
+      return from20to990Hundreds (number);
   }
 }
 
@@ -52,7 +61,7 @@ function from1to19 (last) {
   }
 }
 
-function from20to99 (middle) {
+function from20to99DozensFull (middle) {
   switch (middle) {
     case 20: 
       return 'twenty';
@@ -71,5 +80,28 @@ function from20to99 (middle) {
     case 90:
       return 'ninety';
   }
-  // return String(from20to99((+middle[0] * 10)) + ' ' + from1to19(middle[1]))
+}
+function from20to99Dozens (middle) {
+  let dozens = Math.floor(middle / 10) * 10;
+  let numbers = middle % 10;
+  return (from20to99DozensFull (dozens) + " " + from1to19 (numbers));
+}
+
+function from100to990HundredsFull (first) {
+  let hundreds = Math.floor(first / 100);
+  return (from1to19 (hundreds) + " " + "hundred");
+}
+
+function from20to990Hundreds (first) {
+  let hundreds = Math.floor(first / 100);
+  let dozens = first % 100;
+  if (dozens >= 0 && dozens < 20) {
+    return (from1to19 (hundreds) + " " + "hundred " + from1to19 (dozens));;
+  }
+  if (dozens >= 20 && dozens < 100) {
+    if (dozens % 10 === 0) {
+      return (from1to19 (hundreds) + " " + "hundred " + from20to99DozensFull (dozens));
+    } else 
+      return (from1to19 (hundreds) + " " + "hundred " + from20to99Dozens (dozens));
+  }
 }
